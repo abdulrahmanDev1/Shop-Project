@@ -22,7 +22,7 @@ This is a Node.js project that uses EJS as the templating engine and MongoDB as 
 ![Product List](./screenshots/cart.png)
 
 
-### Ordera
+### Orders
 
 ![Product List](./screenshots/orders.png)
 
