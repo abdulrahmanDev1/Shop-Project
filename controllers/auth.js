@@ -105,7 +105,7 @@ exports.postSignup = (req, res, next) => {
           res.redirect('/login');
           return transporter.sendMail({
             to: email,
-            from: 'aliaamahdy80@gmail.com',
+            from: 'shop@teml.net',
             subject: 'Signup succeeded!',
             html: '<h1>You successfully signed up!</h1>'
           });
@@ -163,7 +163,7 @@ exports.postReset = (req, res, next) => {
         res.redirect('/');
         transporter.sendMail({
           to: req.body.email,
-          from: 'aliaamahdy80@gmail.com',
+          from: 'shop@teml.net',
           subject: 'Password reset',
           html: `
             <p>You requested a password reset</p>
