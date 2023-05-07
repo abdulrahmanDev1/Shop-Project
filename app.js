@@ -27,6 +27,9 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
+const {
+  connected
+} = require('process');
 
 app.use(bodyParser.urlencoded({
   extended: false
@@ -67,11 +70,17 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
+
 mongoose
-  .connect(MONGODB_URI)
+  .connect(MONGODB_URI, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true
+  })
   .then(result => {
+    console.log('connected')
     app.listen(3000);
   })
   .catch(err => {
     console.log(err);
   });
+2
