@@ -1,16 +1,14 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
 
 * {
   box-sizing: border-box;
-  font-family: JetBrains Mono,
-    arial,
-    helvetica;
+  font-family: JetBrains Mono, arial, helvetica;
 }
 
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   background-color: #212121;
   color: aliceblue;
 }

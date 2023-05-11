@@ -1,8 +1,22 @@
 <%- include('includes/head.ejs') %>
+<link rel="stylesheet" href="/css/404.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 
 <body>
-    <%- include('includes/navigation.ejs') %>
-    <h1>Page Not Found!</h1>
 
-<%- include('includes/end.ejs') %>
+    <div class="text">
+        <h1>404</h1>
+        <h2>Uh, Ohh</h2>
+        <h3>Sorry we cant find what you are looking for 'cuz its so dark in here</h3>
+    </div>
+    <div class="torch"></div>
+    <script>
+        $(document).mousemove(function (event) {
+            $('.torch').css({
+                'top': event.pageY,
+                'left': event.pageX
+            });
+        });
+    </script>
+    <%- include('includes/end.ejs') %>
