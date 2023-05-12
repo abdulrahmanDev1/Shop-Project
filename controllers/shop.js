@@ -1,10 +1,12 @@
+// Import dependencies
 const Product = require('../models/product');
 const Order = require('../models/order');
 
+// Handle GET request to display all products
 exports.getProducts = (req, res, next) => {
+  // Find all products and render them using a template engine
   Product.find()
     .then(products => {
-      // console.log(products);
       res.render('shop/product-list', {
         prods: products,
         pageTitle: 'All Products',
@@ -12,11 +14,15 @@ exports.getProducts = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
     });
 };
 
+// Handle GET request to display a specific product detail page
 exports.getProduct = (req, res, next) => {
+  // Find the product with the given ID and render its detail page using a template engine
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {
@@ -26,10 +32,16 @@ exports.getProduct = (req, res, next) => {
         path: '/products'
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
 
+// Handle GET request to display the home page
 exports.getIndex = (req, res, next) => {
+  // Find all products and render the home page using a template engine
   Product.find()
     .then(products => {
       res.render('shop/index', {
@@ -39,11 +51,15 @@ exports.getIndex = (req, res, next) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
     });
 };
 
+// Handle GET request to display the user's cart page
 exports.getCart = (req, res, next) => {
+  // Populate the user's cart with product data and render the cart page using a template engine
   req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -55,10 +71,16 @@ exports.getCart = (req, res, next) => {
         products: products
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
 
+// Handle POST request to add a product to the user's cart
 exports.postCart = (req, res, next) => {
+  // Find the product with the given ID, add it to the user's cart, and redirect to the cart page
   const prodId = req.body.productId;
   Product.findById(prodId)
     .then(product => {
@@ -70,17 +92,25 @@ exports.postCart = (req, res, next) => {
     });
 };
 
+// Handle POST request to remove a product from the user's cart
 exports.postCartDeleteProduct = (req, res, next) => {
+  // Find the product with the given ID, remove it from the user's cart, and redirect to the cart page
   const prodId = req.body.productId;
   req.user
     .removeFromCart(prodId)
     .then(result => {
       res.redirect('/cart');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
 
+// Handle POST request to create an order with the products in the user's cart
 exports.postOrder = (req, res, next) => {
+  // Populate the user's cart with product data, create an order with the products, and clear the user's cart
   req.user
     .populate('cart.items.productId')
     .execPopulate()
@@ -108,10 +138,16 @@ exports.postOrder = (req, res, next) => {
     .then(() => {
       res.redirect('/orders');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
 
+// Handle GET request to display the user's orders
 exports.getOrders = (req, res, next) => {
+  // Find all orders created by the user and render them using a template engine
   Order.find({
       'user.userId': req.user._id
     })
@@ -122,5 +158,9 @@ exports.getOrders = (req, res, next) => {
         orders: orders
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };

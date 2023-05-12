@@ -1,10 +1,12 @@
+// Import dependencies
 const {
   validationResult
 } = require('express-validator');
-
 const Product = require('../models/product');
 
+// Handle GET request to add a new product
 exports.getAddProduct = (req, res, next) => {
+  // Render the "edit-product" template with initial data
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
@@ -15,13 +17,18 @@ exports.getAddProduct = (req, res, next) => {
   });
 };
 
+// Handle POST request to add a new product
 exports.postAddProduct = (req, res, next) => {
+  // Extract form data from the request
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+
+  // Validate the form data using "express-validator"
   const errors = validationResult(req);
 
+  // If there are validation errors, render the "edit-product" template with error messages and previously entered data
   if (!errors.isEmpty()) {
     console.log(errors.array());
     return res.status(422).render('admin/edit-product', {
@@ -40,6 +47,7 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
 
+  // If there are no validation errors, create a new product using the "Product" model and save it to the database
   const product = new Product({
     title: title,
     price: price,
@@ -54,15 +62,22 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => {
-      console.log(err);
+      // If there is an error during the process, pass the error to the error handler middleware
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
     });
 };
 
+// Handle GET request to edit an existing product
 exports.getEditProduct = (req, res, next) => {
+  // Check if the "edit" parameter is present in the query string
   const editMode = req.query.edit;
   if (!editMode) {
+    // If not, redirect the user to the home page
     return res.redirect('/');
   }
+  // Find the product with the given ID and render the "edit-product" template with the product data
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {
@@ -79,18 +94,27 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: []
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // If there is an error during the process, pass the error to the error handler middleware
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
 
+// Handle POST request to update an existing product
 exports.postEditProduct = (req, res, next) => {
+  // Extract form data from the request
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
 
+  // Validate the form data using "express-validator"
   const errors = validationResult(req);
 
+  // If there are validation errors, render the "edit-product" template with error messages and previously entered data
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Edit Product',
@@ -109,6 +133,7 @@ exports.postEditProduct = (req, res, next) => {
     });
   }
 
+  // If there are no validation errors, find the product with the given ID, update its fields with the new data, and save it to the database
   Product.findById(prodId)
     .then(product => {
       if (product.userId.toString() !== req.user._id.toString()) {
@@ -123,10 +148,17 @@ exports.postEditProduct = (req, res, next) => {
         res.redirect('/admin/products');
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // If there is an error during the process, pass the error to the error handler middleware
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
 
+// Handle GET request to get all products created by the currently logged in user
 exports.getProducts = (req, res, next) => {
+  // Find all products created by the currently logged in user and render them using a template engine
   Product.find({
       userId: req.user._id
     })
@@ -138,11 +170,18 @@ exports.getProducts = (req, res, next) => {
         path: '/admin/products'
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // If there is an error during the process, pass the error to the error handler middleware
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
 
+// Handle POST request to delete a product with the given ID created by the currently logged in user
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
+  // Find the product with the given ID and delete it from the database
   Product.deleteOne({
       _id: prodId,
       userId: req.user._id
@@ -151,5 +190,10 @@ exports.postDeleteProduct = (req, res, next) => {
       console.log('DESTROYED PRODUCT');
       res.redirect('/admin/products');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      // If there is an error during the process, pass the error to the error handler middleware
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(err);
+    });
 };
