@@ -19,8 +19,6 @@ router.post('/add-product',
             min: 3
         })
         .trim(),
-        body('imageUrl', 'Please enter a valid Url.')
-        .isURL(),
         body('price', 'Please enter a valid Price.')
         .isFloat(),
         body('description', 'Description must be at least 5 characters long.')
@@ -40,8 +38,6 @@ router.post('/edit-product',
             min: 3
         })
         .trim(),
-        body('imageUrl', 'Please enter a valid Url.')
-        .isURL(),
         body('price', 'Please enter a valid Price.')
         .isFloat(),
         body('description', 'Description must be at least 5 characters long.')
