@@ -266,6 +266,28 @@ form {
   color: red;
 }
 
+.pagination {
+  margin-top: 3rem;
+  text-align: center;
+}
+.page-link {
+  text-decoration: none;
+  color: #00695c;
+  background-color: white;
+  padding: 0.5rem;
+  border: 1px solid #00695c;
+  border-radius: 5px;
+  margin: 0 0.5rem;
+}
+
+.page-link:hover,
+.page-link:active,
+.page-link.active {
+  color: white !important;
+  border-color: white !important;
+  background-color: #00695c;
+}
+
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;
