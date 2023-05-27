@@ -288,6 +288,38 @@ form {
   background-color: #00695c;
 }
 
+.btn2 {
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  text-decoration: none;
+  font: inherit;
+  border: 1px solid #00695c;
+  color: #00695c;
+  background: white;
+  border-radius: 3px;
+  margin: 0 1rem;
+  cursor: pointer;
+  /* width: 100%; */
+  margin-bottom: 10px !important;
+}
+
+.btn2:hover,
+.btn2:active {
+  background-color: #00695c;
+  color: white;
+}
+
+.btn2.danger {
+  color: red;
+  border-color: red;
+}
+
+.btn2.danger:hover,
+.btn2.danger:active {
+  background: red;
+  color: white;
+}
+
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;
@@ -300,4 +332,14 @@ form {
   .user-message {
     width: 30rem;
   }
+}
+
+.info{
+  color: rgba(240, 248, 255, 0.075);
+  margin: 0;
+  padding: 0;
+}
+.info:hover{
+  color: whitesmoke;
+  cursor:none ;
 }

@@ -48,8 +48,8 @@ exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   User.findOne({
-      email: email
-    })
+    email: email
+  })
     .then(user => {
       if (!user) {
         req.flash('error', 'Invalid email or password.');
@@ -87,14 +87,15 @@ exports.postSignup = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render('auth/signup', {
+      // email: req.body.email,
       path: '/signup',
       pageTitle: 'Signup',
       errorMessage: errors.array()[0].msg
     });
   }
   User.findOne({
-      email: email
-    })
+    email: email
+  })
     .then(userDoc => {
       if (userDoc) {
         req.flash(
@@ -164,8 +165,8 @@ exports.postReset = (req, res, next) => {
     }
     const token = buffer.toString('hex');
     User.findOne({
-        email: req.body.email
-      })
+      email: req.body.email
+    })
       .then(user => {
         if (!user) {
           req.flash('error', 'No account with that email found.');
@@ -198,11 +199,11 @@ exports.postReset = (req, res, next) => {
 exports.getNewPassword = (req, res, next) => {
   const token = req.params.token;
   User.findOne({
-      resetToken: token,
-      resetTokenExpiration: {
-        $gt: Date.now()
-      }
-    })
+    resetToken: token,
+    resetTokenExpiration: {
+      $gt: Date.now()
+    }
+  })
     .then(user => {
       let message = req.flash('error');
       if (message.length > 0) {
@@ -232,12 +233,12 @@ exports.postNewPassword = (req, res, next) => {
   const passwordToken = req.body.passwordToken
   let resetUser;
   User.findOne({
-      resetToken: passwordToken,
-      resetTokenExpiration: {
-        $gt: Date.now()
-      },
-      _id: userId
-    })
+    resetToken: passwordToken,
+    resetTokenExpiration: {
+      $gt: Date.now()
+    },
+    _id: userId
+  })
     .then(user => {
       resetUser = user;
       return bcrypt.hash(newPassword, 12)

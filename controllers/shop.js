@@ -116,6 +116,7 @@ exports.getCart = (req, res, next) => {
       error.httpStatusCode = 500;
       return next(err);
     });
+
 };
 
 // Handle POST request to add a product to the user's cart
@@ -241,7 +242,7 @@ exports.getInvoice = (req, res, next) => {
         pdfDoc.fontSize(14).text(p.product.title + ' - ' + p.quantity + ' x ' + '$' + p.product.price);
       });
 
-      pdfDoc.fontSize(18).text('Total Price: $' + totalPrice);
+      pdfDoc.fontSize(18).text('Total Price: $' + totalPrice.toFixed(2));
       pdfDoc.end();
     })
     .catch(err => next(err));
