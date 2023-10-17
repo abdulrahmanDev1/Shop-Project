@@ -5,9 +5,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const csrf = require('csurf');
+const csurf = require("tiny-csrf");
 const flash = require('connect-flash');
 const multer = require('multer');
+const cookieParser = require("cookie-parser");
 
 
 // Import controllers and models
@@ -15,7 +16,8 @@ const errorController = require('./controllers/error');
 const User = require('./models/user');
 
 // Set up MongoDB URI and create new Express app
-const MONGODB_URI = 'mongodb://localhost:27018/Shop';
+//// mongoDb after the last update couldn't connect using localhost:27017 and had to change it to 127.0.0.1:27017
+const MONGODB_URI = 'mongodb://127.0.0.1:27017/Shop';
 const app = express();
 
 // Set up MongoDB session store, CSRF protection, and view engine
@@ -24,16 +26,19 @@ const store = new MongoDBStore({
   collection: 'sessions'
 });
 
-const csrfProtection = csrf();
-
 const fileStorage = multer.diskStorage({
   destination: (req, file, cp) => {
     cp(null, 'images')
   },
   filename: (req, file, cp) => {
-    cp(null, new Date().toISOString() + '-' + file.originalname)
+    //removed the colons from the name because the windows doesn't allow a name to contain colons ":"
+    const timestamp = new Date().toISOString().replace(/:/g, '');
+    const newFileName = timestamp + '-' + file.originalname;
+    cp(null, newFileName);
   }
 });
+
+
 
 const fileFilter = (req, file, cp) => {
   if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
@@ -55,6 +60,7 @@ const authRoutes = require('./routes/auth');
 app.use(bodyParser.urlencoded({
   extended: false
 }));
+app.use(cookieParser("cookie-parser-secret"));
 
 app.use(multer({
   storage: fileStorage,
@@ -72,7 +78,7 @@ app.use(session({
   store: store
 }));
 
-app.use(csrfProtection);
+app.use(csurf("123456789iamasecret987654321look", ["Post"]));
 app.use(flash());
 
 // Adding CSRF token to all views
@@ -111,11 +117,13 @@ app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
 app.use((error, req, res, next) => {
+  // console.log(req.session.isLoggedIn + ` LOG`)
   res.status(500).render('500', {
     pageTitle: 'Error!',
     path: '/500',
-    isAuthenticated: req.session.isLoggedIn
-  });
+    isAuthenticated: res.locals.isAuthenticated
+  }
+  );
 });
 
 
